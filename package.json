@@ -1,0 +1,14 @@
+{
+  "name": "vue-chat",
+  "version": "1.0.0",
+  "description": "A vue chat app to practice my experience with sockets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "daneric",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
