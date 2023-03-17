@@ -2,11 +2,11 @@
   "name": "dam-it",
   "version": "1.0.0",
   "description": "A vue chat app to practice my experience with sockets",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node ./build/index.js",
+    "start": "node ./build/server.js",
     "build": "tsc -p .",
-    "dev": "nodemon ./src/index.ts"
+    "dev": "nodemon ./src/server.ts"
   },
   "author": "daneric",
   "license": "ISC",
