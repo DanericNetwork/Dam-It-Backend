@@ -3,7 +3,7 @@ import path from "path";
 import { Application } from "express";
 import { Server as HttpServer } from "http";
 import { Server as IoServer, Socket } from "socket.io";
-import Debug from "../modules/debugger";
+import Debug from "../utils/debugger";
 
 interface SocketModule {
   name: string;
