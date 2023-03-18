@@ -1,5 +1,5 @@
-import express, { Application, Request, Response } from 'express';
-import { createServer, Server } from 'http';
+import express, { Application, Request, Response, NextFunction } from "express";
+import { createServer, Server } from "http";
 
 export default class ExpressServer {
   public app: Application;
@@ -10,18 +10,20 @@ export default class ExpressServer {
     this.port = port;
     this.app = express();
     this.http = createServer(this.app);
-    this.setupRoutes();
-  }
 
-  private setupRoutes(): void {
-    this.app.get('/', (req: Request, res: Response) => {
-      res.status(200).json({ status: 'Ok' });
-    });
+    this.app.use(
+      (err: Error, req: Request, res: Response, next: NextFunction) => {
+        console.error(err.stack);
+        res.status(500).send("Internal Server Error");
+      }
+    );
   }
 
   public start(): void {
     this.http.listen(this.port, () => {
-      console.log(`\nExpress server listening on port ${this.port} on ${process.env.NODE_ENV} mode\n`);
+      console.log(
+        `\nExpress server listening on port ${this.port} on ${process.env.NODE_ENV} mode\n`
+      );
     });
   }
 
