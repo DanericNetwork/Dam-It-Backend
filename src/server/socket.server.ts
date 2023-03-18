@@ -1,42 +1,44 @@
-import { Server as IoServer } from "socket.io";
-import { Application } from "express";
-import { Server as HttpServer } from "http";
 import fs from "fs";
 import path from "path";
-import Websocket from "../modules/socket.builder";
+import { Application } from "express";
+import { Server as HttpServer } from "http";
+import { Server as IoServer, Socket } from "socket.io";
 import Debug from "../modules/debugger";
 
+interface SocketModule {
+  name: string;
+  function: (socket: Socket, data: any) => void;
+}
+
 export default class SocketServer {
-  public io: IoServer;
+  private io: IoServer;
 
   constructor(private app: Application, private http: HttpServer) {
-    this.io = require("socket.io")(this.http, {
-      cors: {
-        origin:
-          process.env.NODE_ENV === "production"
-            ? process.env.FRONTEND_DOMAIN
-            : "http://localhost:8080",
-      },
-    });
-    this.io.on("connection", this.onConnection.bind(this));
+    const corsOrigin = process.env.NODE_ENV === "production"
+      ? process.env.FRONTEND_DOMAIN
+      : "http://localhost:8080";
+    this.io = new IoServer(this.http, { cors: { origin: corsOrigin } });
+    this.io.on("connection", this.handleConnection.bind(this));
   }
 
-  private onConnection(socket: any): void {
-    let token = socket.handshake.auth.token;
-    Debug((new Date()).toLocaleString('en-GB'), "User connected " + token);
+  private handleConnection(socket: Socket): void {
+    const token = socket.handshake.auth.token;
+    Debug(new Date().toLocaleString("en-GB"), `User connected ${token}`);
     socket.on("disconnect", () => {
-      Debug("user disconnected");
+      Debug("User disconnected");
     });
     this.loadModules(socket);
   }
 
-  private loadModules(socket: any): void {
-    const modules = fs.readdirSync(path.join(__dirname, '../modules'));
-    modules.forEach((folder: any) => {
-      const modulePath = path.join(__dirname, '../modules', folder);
-      if (fs.lstatSync(modulePath).isDirectory()) {
-        fs.readdirSync(modulePath).forEach((file: any) => {
-          if (file.includes(".socket.ts")) {
+  private loadModules(socket: Socket): void {
+    const modulesDir = path.join(__dirname, "../modules");
+    const modules = fs.readdirSync(modulesDir);
+    modules.forEach((moduleFile) => {
+      const modulePath = path.join(modulesDir, moduleFile);
+      const stats = fs.lstatSync(modulePath);
+      if (stats.isDirectory()) {
+        fs.readdirSync(modulePath).forEach((file) => {
+          if (file.endsWith(".socket.ts")) {
             this.loadSocketModule(modulePath, file, socket);
           }
         });
@@ -44,19 +46,13 @@ export default class SocketServer {
     });
   }
 
-  private loadSocketModule(modulePath: string, file: string, socket: any): void {
-    const module = require(path.join(modulePath, file));
-    if (module.default instanceof Websocket) {
-      Debug(
-        "\x1b[31m%s\x1b[0m",
-        "Websocket \x1b[32m" + module.default?.name + "\x1b[31m loaded"
-      );
-      socket.on(module.default.name, module.default.function);
+  private loadSocketModule(modulePath: string, file: string, socket: Socket): void {
+    const module = require(path.join(modulePath, file)) as SocketModule;
+    if (module && module.name && module.function instanceof Function) {
+      Debug(`Websocket ${module.name} loaded`);
+      socket.on(module.name, module.function);
     } else {
-      Debug(
-        "\x1b[31m%s\x1b[0m",
-        "Module " + path.basename(modulePath) + " is not a valid module"
-      );
+      Debug(`Module ${path.basename(modulePath)} is not a valid module`);
     }
   }
 }
