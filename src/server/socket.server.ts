@@ -4,6 +4,7 @@ import { Application } from "express";
 import { Server as HttpServer } from "http";
 import { Server as IoServer, Socket } from "socket.io";
 import Debug from "../utils/debugger";
+import { Config } from "../utils/config";
 
 interface SocketModule {
   name: string;
@@ -14,8 +15,8 @@ export default class SocketServer {
   private io: IoServer;
 
   constructor(private app: Application, private http: HttpServer) {
-    const corsOrigin = process.env.NODE_ENV === "production"
-      ? process.env.FRONTEND_DOMAIN
+    const corsOrigin = Config.env === "production"
+      ? Config.frontendUrl
       : "http://localhost:8080";
     this.io = new IoServer(this.http, { cors: { origin: corsOrigin } });
     this.io.on("connection", this.handleConnection.bind(this));

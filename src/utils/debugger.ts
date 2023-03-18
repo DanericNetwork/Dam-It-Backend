@@ -1,5 +1,7 @@
+import { Config } from "./config";
+
 export default function Debug(...args: any[]) {
-  if (process.env.NODE_ENV === "development") {
+  if (Config.env === "development") {
     console.log(...args);
   }
 }
