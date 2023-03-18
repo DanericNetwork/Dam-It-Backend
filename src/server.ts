@@ -1,10 +1,9 @@
 import ExpressServer from "./server/express.server";
 import SocketServer from "./server/socket.server";
-import path from "path";
 import dotenv from "dotenv";
 
 // Load environment variables
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config();
 
 // Initialize the http server and socket server
 export const expressServer = new ExpressServer(3000);
