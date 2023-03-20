@@ -1,18 +1,19 @@
 import fs from "fs";
 import path from "path";
-import { Application } from "express";
-import { Server as HttpServer } from "http";
 import { Server as IoServer, Socket } from "socket.io";
 import Debug, { DebugMethod } from "../utils/debugger";
 import { Config } from "../utils/config";
 import Websocket from "../modules/socket.builder";
+import { expressServer } from "../server";
 
 export default class SocketServer {
   private io: IoServer;
 
-  constructor(private app: Application, private http: HttpServer) {
+  constructor() {
     const corsOrigin = Config.frontendUrl;
-    this.io = new IoServer(this.http, { cors: { origin: corsOrigin } });
+    this.io = new IoServer(expressServer.http, {
+      cors: { origin: corsOrigin },
+    });
     this.io.on("connection", this.handleConnection.bind(this));
   }
 

@@ -8,11 +8,11 @@ export default class ExpressServer {
   public http: Server;
   public port: number | any;
 
-  constructor(port: number | string) {
-    this.port = port;
+  constructor() {
+    this.port = Config.port;
     this.app = express();
     this.http = createServer(this.app);
-
+    // Error handling
     this.app.use(
       (err: Error, req: Request, res: Response, next: NextFunction) => {
         console.error(err.stack);
