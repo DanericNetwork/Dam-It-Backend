@@ -11,6 +11,6 @@ export default function Debug(method: DebugMethod, ...message: any) {
   }
 
   console.log(
-    `${new Date().toLocaleString("en-GB")} ${method} ${message}`
+    `\x1b[37m[${new Date().toLocaleTimeString()}]\x1b[0m ${method} ${message}`
   );
 }
