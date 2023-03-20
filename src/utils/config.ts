@@ -1,5 +1,5 @@
 import { config as initEnv } from 'dotenv';
-import Debug, { DebugMethod } from './debugger';
+import Debug, { DebugMethod } from './debug';
 import fs from 'fs';
 import path from 'path';
 

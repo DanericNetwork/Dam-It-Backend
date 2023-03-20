@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Server as IoServer, Socket } from "socket.io";
-import Debug, { DebugMethod } from "../utils/debugger";
+import Debug, { DebugMethod } from "../utils/debug";
 import { Config } from "../utils/config";
 import Websocket from "../modules/socket.builder";
 import { expressServer } from "../server";
@@ -29,12 +29,12 @@ export default class SocketServer {
    * It also adds a disconnect listener to the socket.
    * @example
    * socket.on("disconnect", () => {
-   *  Debug(DebugMethod.info, "User disconnected\n");
+   *  Debug(DebugMethod.info, "User disconnected");
    * });
    * @example
    **/
   private handleConnection(socket: Socket): void {
-    Debug(DebugMethod.info, `User connected ${socket.id}\n`);
+    Debug(DebugMethod.info, `User connected ${socket.id}`);
     Debug(DebugMethod.info, `Loading modules for ${socket.id}...`);
     this.loadModules(socket);
   }

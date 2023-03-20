@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import Websocket from "../socket.builder";
-import Debug, { DebugMethod } from "../../utils/debugger";
+import Debug, { DebugMethod } from "../../utils/debug";
   
 export default class DisconnectSocket extends Websocket {
   constructor(socket: Socket) {
