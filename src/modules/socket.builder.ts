@@ -1,4 +1,4 @@
-/**
+/*
  * Builds an websocket for socket.ts files.
  * @param {string} name represents the socket ($io.emit("name"))
  * @param {any} function executed when socket is emitted (with parameters)

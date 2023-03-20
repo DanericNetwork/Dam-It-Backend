@@ -6,7 +6,7 @@ import { Config } from "../utils/config";
 import Websocket from "../modules/socket.builder";
 import { expressServer, socketServer } from "../server";
 
-/**
+/*
  * Manages the socket.io server & clients.
  * @function start() Starts the socket.io server using the express webserver (http).
  * @function handleConnection() Handle a new connection (from client).
@@ -14,7 +14,7 @@ import { expressServer, socketServer } from "../server";
  * @function loadModule() Load a single websocket module (child of loadModules())
  */
 export default class SocketServer {
-  /**
+  /*
    * Starts the socket.io server using the express webserver (http).
    */
   public start(): void {
@@ -26,7 +26,7 @@ export default class SocketServer {
     io.on("connection", this.handleConnection.bind(this));
   }
 
-  /**
+  /*
    * Handle a new connection
    * @param {Socket} socket - the socket of the new connection
    * @description
@@ -42,7 +42,7 @@ export default class SocketServer {
     this.loadModules(socket);
   }
 
-  /**
+  /*
    * Load all websocket modules from the modules directories
    * @param {Socket} socket - the socket to load modules for (client)
    */
@@ -62,7 +62,7 @@ export default class SocketServer {
     });
   }
 
-  /**
+  /*
    * Load a single websocket module (child of loadModules())
    * @param {string} modulePath - Path to the module directory
    * @param {string} file - File name of the module (e.g. disconnect.socket.ts)
