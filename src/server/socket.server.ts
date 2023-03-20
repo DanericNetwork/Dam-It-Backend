@@ -50,10 +50,10 @@ export default class SocketServer {
   ): void {
     const module = require(path.join(modulePath, file)).default;
     if (module instanceof Websocket) {
-      Debug(DebugMethod.info, `Module ${module.name} initialized`);
+      Debug(DebugMethod.info, `* ${module.name} * module initialized`);
       socket.on(module.name, module.function);
     } else {
-      Debug(DebugMethod.error, `Initialization of ${file} failed (not a Websocket)`);
+      Debug(DebugMethod.error, `Initialization of * ${file} * failed (not a Websocket)`);
     }
   }
 }
