@@ -8,7 +8,7 @@ export default class ExpressServer {
   public http: Server;
   public port: number | any;
 
-  constructor(port: number) {
+  constructor(port: number | string) {
     this.port = port;
     this.app = express();
     this.http = createServer(this.app);
