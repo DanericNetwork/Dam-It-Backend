@@ -3,7 +3,7 @@ import { createServer, Server } from "http";
 import { Config } from "../utils/config";
 import Debug, { DebugMethod } from "../utils/debug";
 
-/**
+/*
  * Represents the app (express) 
  * out of this class it is possible to manage the express server
  * @function start() starts the webserver
@@ -21,7 +21,7 @@ export default class ExpressServer {
     this.http = createServer(this.app);
   }
 
-  /**
+  /*
   * Starts the (express) webserver and log.
   */
   public start(): void {
@@ -34,7 +34,7 @@ export default class ExpressServer {
     });
   }
 
-  /**
+  /*
    * Kills webserver (manual)
    * Can be used for test purposes
    */
@@ -43,7 +43,7 @@ export default class ExpressServer {
     Debug(DebugMethod.warn, "server stopped by ExpressServer.stop")
   }
 
-  /**
+  /*
    * Set all parameters before the app is started
    */
   private setupRouteRules(): void {

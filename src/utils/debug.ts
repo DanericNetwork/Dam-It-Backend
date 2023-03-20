@@ -4,7 +4,7 @@ export enum DebugMethod {
   "warn" = "\x1b[37m\x1b[43m Warn \x1b[0m\x1b[37m",
 }
 
-/**
+/*
  * Replaces console.log for better debug feedback.
  * @param {DebugMethod} method Represent the type of debug for better feedback. 
  * @param {any} message All default args used in console.log. 
