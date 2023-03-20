@@ -11,10 +11,7 @@ export default class SocketServer {
   private io: IoServer;
 
   constructor(private app: Application, private http: HttpServer) {
-    const corsOrigin =
-      Config.env === "production"
-        ? Config.frontendUrl
-        : "http://localhost:8080";
+    const corsOrigin = Config.frontendUrl;
     this.io = new IoServer(this.http, { cors: { origin: corsOrigin } });
     this.io.on("connection", this.handleConnection.bind(this));
   }
