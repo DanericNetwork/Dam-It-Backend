@@ -4,9 +4,11 @@ import { Server as IoServer, Socket } from "socket.io";
 import Debug, { DebugMethod } from "../utils/debug";
 import { Config } from "../utils/config";
 import Websocket from "../modules/socket.builder";
-import { expressServer } from "../server";
+import { expressServer, socketServer } from "../server";
 
 export default class SocketServer {
+  private io?: IoServer;
+
   public start(): IoServer {
     const io = new IoServer(expressServer.http, {
       cors: {
@@ -14,6 +16,7 @@ export default class SocketServer {
       },
     });
     io.on("connection", this.handleConnection.bind(this));
+    this.io = io;
     return io;
   }
 
@@ -34,7 +37,7 @@ export default class SocketServer {
    * @example
    **/
   private handleConnection(socket: Socket): void {
-    Debug(DebugMethod.info, `User connected ${socket.id}`);
+    Debug(DebugMethod.info, `User connected ${socket.id}: ${socket.handshake.headers.origin}`);
     Debug(DebugMethod.info, `Loading modules for ${socket.id}...`);
     this.loadModules(socket);
   }
@@ -73,7 +76,7 @@ export default class SocketServer {
     const module = require(path.join(modulePath, file)).default;
     if (module?.prototype instanceof Websocket) {
       const websocket = new module(socket);
-      Debug(DebugMethod.info, `* ${websocket.name} * websocket-module initialized`);
+      Debug(DebugMethod.info, `(${websocket.name}) websocket-module initialized`);
       socket.on(websocket.name, websocket.function);
     } else {
       Debug(
