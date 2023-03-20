@@ -1,6 +1,9 @@
 import { config as initEnv } from 'dotenv';
+import Debug, { DebugMethod } from './debugger';
+import fs from 'fs';
+import path from 'path';
 
-initEnv();
+fs.existsSync(path.join(__dirname, '../../.env')) ? initEnv() : Debug(DebugMethod.warn, "No .env file found, please create one!");
 
 export const Config = {
     port: process.env.PORT || 3000,

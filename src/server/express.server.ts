@@ -24,7 +24,7 @@ export default class ExpressServer {
   public start(): void {
     this.http.listen(this.port, () => {
       Debug(DebugMethod.info, 
-        `Express server listening on port ${this.port} on ${Config.env} mode\n`
+        `Server is running port ${this.port} on ${Config.env} mode\n`
       );
     });
   }

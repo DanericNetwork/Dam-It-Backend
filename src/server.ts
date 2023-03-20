@@ -5,5 +5,6 @@ import SocketServer from "./server/socket.server";
 export const expressServer: ExpressServer = new ExpressServer;
 export const socketServer: SocketServer = new SocketServer;	
 
-// Start the server
+// Start the servers
 expressServer.start();
+socketServer.start();
