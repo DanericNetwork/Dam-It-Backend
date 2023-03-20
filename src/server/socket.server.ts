@@ -19,10 +19,11 @@ export default class SocketServer {
 
   private handleConnection(socket: Socket): void {
     const token = socket.handshake.auth.token;
-    Debug(DebugMethod.info, `User connected ${token}`);
+    Debug(DebugMethod.info, `User connected ${token}\n`);
     socket.on("disconnect", () => {
-      Debug(DebugMethod.info, "User disconnected");
+      Debug(DebugMethod.info, "User disconnected\n");
     });
+    Debug(DebugMethod.info,  `Loading modules for ${token}...`);
     this.loadModules(socket);
   }
 
@@ -49,10 +50,10 @@ export default class SocketServer {
   ): void {
     const module = require(path.join(modulePath, file)).default;
     if (module instanceof Websocket) {
-      Debug(DebugMethod.info, `Websocket ${module.name} loaded`);
+      Debug(DebugMethod.info, `Module ${module.name} initialized`);
       socket.on(module.name, module.function);
     } else {
-      Debug(DebugMethod.error, `Websocket ${file} not loaded`);
+      Debug(DebugMethod.error, `Initialization of ${file} failed (not a Websocket)`);
     }
   }
 }

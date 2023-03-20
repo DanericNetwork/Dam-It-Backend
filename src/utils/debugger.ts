@@ -1,7 +1,7 @@
 export enum DebugMethod {
-  "info" = "\x1b[37m\x1b[44mInfo\x1b[0m\x1b[37m",
-  "error" = "\x1b[37m\x1b[41mError\x1b[0m\x1b[37m",
-  "warn" = "\x1b[37m\x1b[43mWarn\x1b[0m\x1b[37m",
+  "info" = "\x1b[37m\x1b[44m Info \x1b[0m\x1b[37m",
+  "error" = "\x1b[37m\x1b[41m Error \x1b[0m\x1b[37m",
+  "warn" = "\x1b[37m\x1b[43m Warn \x1b[0m\x1b[37m",
 }
 
 
