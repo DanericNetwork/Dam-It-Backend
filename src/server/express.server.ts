@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import { createServer, Server } from "http";
 import { Config } from "../utils/config";
+import Debug, { DebugMethod } from "../utils/debugger";
 
 export default class ExpressServer {
   public app: Application;
@@ -22,8 +23,8 @@ export default class ExpressServer {
 
   public start(): void {
     this.http.listen(this.port, () => {
-      console.log(
-        `\nExpress server listening on port ${this.port} on ${Config.env} mode\n`
+      Debug(DebugMethod.info, 
+        `Express server listening on port ${this.port} on ${Config.env} mode\n`
       );
     });
   }

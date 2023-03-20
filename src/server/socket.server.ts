@@ -3,30 +3,27 @@ import path from "path";
 import { Application } from "express";
 import { Server as HttpServer } from "http";
 import { Server as IoServer, Socket } from "socket.io";
-import Debug from "../utils/debugger";
+import Debug, { DebugMethod } from "../utils/debugger";
 import { Config } from "../utils/config";
-
-interface SocketModule {
-  name: string;
-  function: (socket: Socket, data: any) => void;
-}
+import Websocket from "../modules/socket.builder";
 
 export default class SocketServer {
   private io: IoServer;
 
   constructor(private app: Application, private http: HttpServer) {
-    const corsOrigin = Config.env === "production"
-      ? Config.frontendUrl
-      : "http://localhost:8080";
+    const corsOrigin =
+      Config.env === "production"
+        ? Config.frontendUrl
+        : "http://localhost:8080";
     this.io = new IoServer(this.http, { cors: { origin: corsOrigin } });
     this.io.on("connection", this.handleConnection.bind(this));
   }
 
   private handleConnection(socket: Socket): void {
     const token = socket.handshake.auth.token;
-    Debug(new Date().toLocaleString("en-GB"), `User connected ${token}`);
+    Debug(DebugMethod.info, `User connected ${token}`);
     socket.on("disconnect", () => {
-      Debug("User disconnected");
+      Debug(DebugMethod.info, "User disconnected");
     });
     this.loadModules(socket);
   }
@@ -47,13 +44,17 @@ export default class SocketServer {
     });
   }
 
-  private loadSocketModule(modulePath: string, file: string, socket: Socket): void {
-    const module = require(path.join(modulePath, file)) as SocketModule;
-    if (module && module.name && module.function instanceof Function) {
-      Debug(`Websocket ${module.name} loaded`);
+  private loadSocketModule(
+    modulePath: string,
+    file: string,
+    socket: Socket
+  ): void {
+    const module = require(path.join(modulePath, file)).default;
+    if (module instanceof Websocket) {
+      Debug(DebugMethod.info, `Websocket ${module.name} loaded`);
       socket.on(module.name, module.function);
     } else {
-      Debug(`Module ${path.basename(modulePath)} is not a valid module`);
+      Debug(DebugMethod.error, `Websocket ${file} not loaded`);
     }
   }
 }
