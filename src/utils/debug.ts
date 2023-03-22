@@ -6,8 +6,8 @@ export enum DebugMethod {
 
 /**
  * Replaces console.log for better debug feedback.
- * @param {DebugMethod} method Represent the type of debug for better feedback. 
- * @param {any} message All default args used in console.log. 
+ * @param {DebugMethod} method Represent the type of debug for better feedback.
+ * @param {any} message All default args used in console.log.
  **/
 export default function Debug(method: DebugMethod, ...message: any) {
   switch (method) {

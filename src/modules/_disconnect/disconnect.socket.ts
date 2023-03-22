@@ -1,15 +1,9 @@
-import { Socket } from "socket.io";
-import Websocket from "../socket.builder";
 import Debug, { DebugMethod } from "../../utils/debug";
+import Websocket from "../socket.builder";
 
-/**
- * Handles client's who disconnect from the socketserver
- * @param {Socket} socket this represents the client socket. (for info as socketID e.g)
- **/
-export default class DisconnectSocket extends Websocket {
-  constructor(socket: Socket) {
-    super("disconnect", () => {
-      Debug(DebugMethod.warn, `User disconnected! ${socket.id}`);
-    });
+export default class Disconnect extends Websocket {
+  constructor() {
+    super();
+    this.setExecution(() => Debug(DebugMethod.warn, `User disconnected ${this.client.id}`));
   }
 }
