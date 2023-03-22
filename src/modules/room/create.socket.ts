@@ -14,8 +14,8 @@ export default class CreateRoomSocket extends Websocket {
       const room: Room = new Room(socket.id);
       Debug(DebugMethod.info, `Created room with pin: ${room.pin}`);
 
-        socket.join(room.pin.toString());
-        socketServer.io?.to(room.pin.toString()).emit("roomCreated", room);
+      socket.join(room.pin.toString());
+      socketServer.io?.to(room.pin.toString()).emit("roomCreated", room);
     });
-    }
+  }
 }

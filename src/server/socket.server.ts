@@ -35,10 +35,10 @@ export default class SocketServer {
    **/
   private setupServerRules(): void {
     /** Place all socket.io rules here **/
-    
+
     // Handles a new connection
     this.io?.sockets.on("connection", this.handleConnection.bind(this));
-    // 
+    //
     Debug(DebugMethod.info, "Server rules set for socket.io");
   }
 
@@ -53,7 +53,10 @@ export default class SocketServer {
    * io.on("connection", this.handleConnection(this.socket))
    ***/
   private handleConnection(socket: Socket): void {
-    Debug(DebugMethod.info, `User connected ${socket.id}: ${socket.handshake.headers.origin}`);
+    Debug(
+      DebugMethod.info,
+      `User connected ${socket.id}: ${socket.handshake.headers.origin}`
+    );
     Debug(DebugMethod.info, `Loading modules for ${socket.id}...`);
     this.loadModules(socket);
   }
@@ -84,15 +87,14 @@ export default class SocketServer {
    * @param {string} file - File name of the module (e.g. disconnect.socket.ts)
    * @param {Socket} socket - Socket of the client
    **/
-  private loadModule(
-    modulePath: string,
-    file: string,
-    socket: Socket
-  ): void {
+  private loadModule(modulePath: string, file: string, socket: Socket): void {
     const module = require(path.join(modulePath, file)).default;
     if (module?.prototype instanceof Websocket) {
       const websocket = new module(socket);
-      Debug(DebugMethod.info, `(${websocket.name}) websocket-module initialized`);
+      Debug(
+        DebugMethod.info,
+        `(${websocket.name}) websocket-module initialized`
+      );
       socket.on(websocket.name, websocket.function);
     } else {
       Debug(

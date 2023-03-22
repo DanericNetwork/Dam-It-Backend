@@ -30,7 +30,9 @@ export default class ExpressServer {
     this.http.listen(this.port, () => {
       Debug(
         DebugMethod.info,
-        `Server started on port ${this.port} in ${new Date().getTime() - this.at.getTime()}ms`
+        `Server started on port ${this.port} in ${
+          new Date().getTime() - this.at.getTime()
+        }ms`
       );
     });
   }
