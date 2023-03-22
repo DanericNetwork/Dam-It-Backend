@@ -12,6 +12,7 @@ import { expressServer, socketServer } from "../server";
  * @function handleConnection() Handle a new connection (from client).
  * @function loadModules() Load all websocket modules from the modules directories
  * @function loadModule() Load a single websocket module (child of loadModules())
+ * @function setupServerRules() Set all parameters before the io server starts
  **/
 export default class SocketServer {
   /**
@@ -26,7 +27,19 @@ export default class SocketServer {
       },
     });
     this.io = io;
-    io.sockets.on("connection", this.handleConnection.bind(this));
+    this.setupServerRules();
+  }
+
+  /**
+   * Set all parameters before the io server starts
+   **/
+  private setupServerRules(): void {
+    /** Place all socket.io rules here **/
+    
+    // Handles a new connection
+    this.io?.sockets.on("connection", this.handleConnection.bind(this));
+    // 
+    Debug(DebugMethod.info, "Server rules set for socket.io");
   }
 
   /**
