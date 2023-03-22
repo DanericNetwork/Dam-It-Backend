@@ -17,13 +17,16 @@ export default class SocketServer {
   /**
    * Starts the socket.io server using the express webserver (http).
    **/
+  public io?: IoServer;
+
   public start(): void {
     const io = new IoServer(expressServer.http, {
       cors: {
         origin: Config.frontendUrl,
       },
     });
-    io.on("connection", this.handleConnection.bind(this));
+    this.io = io;
+    io.sockets.on("connection", this.handleConnection.bind(this));
   }
 
   /**

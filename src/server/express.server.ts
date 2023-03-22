@@ -4,7 +4,7 @@ import { Config } from "../utils/config";
 import Debug, { DebugMethod } from "../utils/debug";
 
 /***
- * Represents the app (express) 
+ * Represents the app (express)
  * out of this class it is possible to manage the express server
  * @function start() starts the webserver
  * @function stop() kills the webserver
@@ -14,6 +14,7 @@ export default class ExpressServer {
   public app: Application;
   public http: Server;
   public port: number | any;
+  private at: Date = new Date();
 
   constructor() {
     this.port = Config.port;
@@ -22,14 +23,14 @@ export default class ExpressServer {
   }
 
   /**
-  * Starts the (express) webserver and log.
-  **/
+   * Starts the (express) webserver and log.
+   **/
   public start(): void {
     this.setupRouteRules();
     this.http.listen(this.port, () => {
       Debug(
         DebugMethod.info,
-        `Server is running port ${this.port} on ${Config.env} mode`
+        `Server started on port ${this.port} in ${new Date().getTime() - this.at.getTime()}ms`
       );
     });
   }
@@ -40,7 +41,7 @@ export default class ExpressServer {
    **/
   public stop(): void {
     this.http.close();
-    Debug(DebugMethod.warn, "server stopped by ExpressServer.stop")
+    Debug(DebugMethod.warn, "server stopped by ExpressServer.stop");
   }
 
   /**
@@ -53,5 +54,6 @@ export default class ExpressServer {
         res.status(500).send("Internal Server Error");
       }
     );
+    Debug(DebugMethod.info, "Route rules set for server");
   }
 }
