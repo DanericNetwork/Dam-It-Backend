@@ -1,15 +1,35 @@
-/**
- * Builds an websocket for socket.ts files.
- * @param {string} name represents the socket ($io.emit("name"))
- * @param {any} function executed when socket is emitted (with parameters)
- * @example new Websocket("test", () => { console.log("this is a test") })
- **/
-export default class Websocket {
-  public name: string;
-  public function: any;
+import { Socket } from "socket.io";
 
-  constructor(name: string, func: any) {
-    this.name = name;
-    this.function = func;
+export default class WebSocket {
+  private _name: string = '';
+  private _execution: Function = () => {};
+  private _client: any = null;
+
+  constructor() {
+    this._name = this.constructor.name.toLowerCase();
+  }
+
+  setName(name: string): void {
+    this._name = name;
+  }
+
+  setExecution(execution: Function): void {
+    this._execution = execution;
+  }
+
+  setClient(client: Socket): void {
+    this._client = client;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  get execution(): any {
+    return this._execution;
+  }
+
+  get client(): Socket {
+    return this._client;
   }
 }
