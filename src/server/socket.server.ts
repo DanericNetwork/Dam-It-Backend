@@ -4,7 +4,7 @@ import { Server as IoServer, Socket } from "socket.io";
 import Debug, { DebugMethod } from "../utils/debug";
 import { Config } from "../utils/config";
 import Websocket from "../modules/socket.builder";
-import { expressServer, socketServer } from "../server";
+import { expressServer } from "../server";
 
 /**
  * Manages the socket.io server & clients.

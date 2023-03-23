@@ -1,13 +1,19 @@
 import { randomInt } from "crypto";
 
 export class Room {
-  pin: number;
-  author: string;
-  created_at: Date;
+  private _pin: number;
+  private _created_at: Date;
 
-  constructor(author: string) {
-    this.pin = randomInt(100000, 999999);
-    this.author = author;
-    this.created_at = new Date();
+  constructor() {
+    this._pin = randomInt(100000, 999999);
+    this._created_at = new Date();
+  }
+
+  get pin(): number {
+    return this._pin;
+  }
+
+  get created_at(): Date {
+    return this._created_at;
   }
 }

@@ -16,8 +16,8 @@ export default class ExpressServer {
   public port: number | any;
   private at: Date = new Date();
 
-  constructor() {
-    this.port = Config.port;
+  constructor(port?: number) {
+    this.port = port || Config.port;
     this.app = express();
     this.http = createServer(this.app);
   }

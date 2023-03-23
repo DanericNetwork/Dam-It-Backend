@@ -11,7 +11,7 @@ import { socketServer } from "../../server";
 export default class CreateRoomSocket extends Websocket {
   constructor(socket: Socket) {
     super("createRoom", () => {
-      const room: Room = new Room(socket.id);
+      const room: Room = new Room();
       Debug(DebugMethod.info, `Created room with pin: ${room.pin}`);
 
       socket.join(room.pin.toString());
