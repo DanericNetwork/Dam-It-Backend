@@ -54,9 +54,9 @@ export default class SocketServer {
   private handleConnection(client: Socket): void {
     Debug(
       DebugMethod.info,
-      `User connected ${client.id}: ${client.handshake.headers.origin}`
+      `User connected ${client.handshake.auth.userId}: ${client.handshake.headers.origin}`
     );
-    Debug(DebugMethod.info, `Loading modules for ${client.id}...`);
+    Debug(DebugMethod.info, `Loading modules for ${client.handshake.auth.userId}...`);
     this.loadModules(client);
   }
 
