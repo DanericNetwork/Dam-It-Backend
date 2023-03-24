@@ -8,15 +8,18 @@ import { socketServer } from "../../server";
  * Handles create room requests from the client
  * @param {Socket} socket this represents the client socket. (for info as socketID e.g)
  **/
-export default class CreateRoomSocket extends Websocket {
-  constructor(socket: Socket) {
+export default class CreateRoom extends Websocket {
+  constructor() {
     super();
     this.setExecution(() => {
       const room: Room = new Room();
-      Debug(DebugMethod.info, `Created room with pin: ${room.pin}`);
-
-      socket.join(room.pin.toString());
-      socketServer.server?.to(room.pin.toString()).emit("roomCreated", room);
+      if (this.client.rooms.size > 1) {
+        Debug(DebugMethod.error, `${this.client.handshake.auth.userId} tried to create a room while already in a room`);
+      } else {
+        this.client.join(room.pin.toString());
+        this.client.emit("roomCreated", room.pin);
+        Debug(DebugMethod.info, `${this.client.handshake.auth.userId} created room with pin: ${room.pin}`);
+      }
     });
   }
 }

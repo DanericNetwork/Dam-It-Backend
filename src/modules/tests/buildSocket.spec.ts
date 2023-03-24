@@ -10,7 +10,7 @@ describe("SocketBuilder", () => {
     }
     const socket = new TestSocket();
     expect(socket).toBeInstanceOf(WebSocket);
-    expect(socket.name).toBe("testsocket");
+    expect(socket.name).toBe("test-socket");
     expect(socket.execution).toBeInstanceOf(Function);
     });
     it("Should create a socket with a client to use", () => {
