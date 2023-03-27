@@ -1,8 +1,5 @@
-import { Socket } from "socket.io";
 import Websocket from "../socket.builder";
-import Debug, { DebugMethod } from "../../utils/debug";
-import { Room } from "./room.service";
-import { socketServer } from "../../server";
+import { findByPin, findByPlayer } from "./room.service";
 
 /**
  * Handles create room requests from the client
@@ -11,9 +8,13 @@ import { socketServer } from "../../server";
 export default class JoinRoom extends Websocket {
   constructor() {
     super();
-    this.setExecution(async (pin: number) => {
-      this.client.join(pin.toString());
-        Debug(DebugMethod.info, `${this.client.handshake.auth.userId} joined room with pin: ${pin}`);
+    this.setExecution(async (pin: string) => {
+      const room = findByPin(pin);
+      if (room !== undefined) {
+        findByPlayer(this.client) === undefined ? room.setPlayer2(this.client) : null;
+      } else {
+        this.client.emit("roomNotFound");
+      }
     });
   }
 }
