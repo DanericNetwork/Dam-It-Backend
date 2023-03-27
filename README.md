@@ -12,7 +12,7 @@ This project runs on Node.js version 18.14.2. It is recommended to use nvm to ma
 
 ### Version
 
-The current version of the server is 0.20.
+The current version of the server is 0.30.
 
 ## Startup
 
