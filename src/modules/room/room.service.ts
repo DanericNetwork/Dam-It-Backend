@@ -22,7 +22,7 @@ export class Room {
 
   private generatePin(): string {
     const pin = randomInt(1000, 9999).toString();
-    if (socketServer.server?.sockets.adapter.rooms.has(pin)) {
+    if (roomStorage.find((room) => room.pin === pin) !== undefined) {
       return this.generatePin();
     } else {
       return pin;
@@ -87,7 +87,6 @@ export async function deleteRoom(pin: string): Promise<void> {
   const room = findByPin(pin);
   if (room !== undefined && room instanceof Room) {
     socketServer.server?.sockets.in(pin).emit("roomLeft");
-    Debug(DebugMethod.info, `Room ${pin} deleted`);
   }
 }
 
