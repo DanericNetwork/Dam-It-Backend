@@ -2,6 +2,7 @@ import { randomInt } from "crypto";
 import { socketServer } from "../../main";
 import { Socket } from "socket.io";
 import Debug, { DebugMethod } from "../../utils/debug";
+import { sendClientError } from "../message.client";
 
 export let roomStorage: Room[] = [];
 
@@ -45,7 +46,7 @@ export class Room {
   }
 
   public setPlayer2(player2: Socket): void {
-    if (this._player2 === undefined && this._player1 !== getUserId(player2)) {
+    if (this._player2 === undefined && this._player1 !== getUserId(player2) && !findByPlayer(player2)) {
       this._player2 = getUserId(player2);
       player2.join(this._pin);
       player2.emit("roomJoined", this._pin);
@@ -86,7 +87,9 @@ export function findByPlayer(player: Socket): Room | undefined {
 export async function deleteRoom(pin: string): Promise<void> {
   const room = findByPin(pin);
   if (room !== undefined && room instanceof Room) {
+    socketServer.server?.sockets.in(pin).socketsLeave(pin);
     socketServer.server?.sockets.in(pin).emit("roomLeft");
+    roomStorage = roomStorage.filter((room) => room.pin !== pin);
   }
 }
 
@@ -108,15 +111,41 @@ export function getClientByUserId(userId: string): Socket | void {
   }
 }
 
-export function leaveRoomByUserId(userId: string): void {
-  const client = getClientByUserId(userId);
+export function leaveRoomByUserId(client: Socket): void {
+  const userId = getUserId(client);
   const room = client ? findByPlayer(client) : undefined;
   if (room !== undefined) {
     deleteRoom(room.pin);
+    Debug(DebugMethod.info, `${userId} disband room with pin: ${room.pin}`);
+    client?.emit("roomLeft", room.pin);
+  } else {
+    Debug(
+      DebugMethod.error,
+      `${userId} tried to leave a room but was not in one`
+    );
+    sendClientError(client, "Leave room failed: You are not in a room");
+  }
+}
+
+export function recoverRoomByClient(client: Socket): void {
+  const room = findByPlayer(client);
+  if (room !== undefined) {
+    client.join(room.pin);
+    client.emit("roomRecovered", room.pin);
     Debug(
       DebugMethod.info,
-      `${userId} left & deleted room with pin: ${room.pin}`
+      `${getUserId(client)} recovered room with pin: ${room.pin}`
     );
-    client?.emit("roomLeft", room.pin);
+  } else {
+    sendClientError(client, "Recovering room failed: You are not in a room");
+  }
+}
+
+export function joinRoomByPin(client: Socket, pin: string): void {
+  const room = findByPin(pin);
+  if (room !== undefined) {
+    room.setPlayer2(client);
+  } else {
+    client.emit("roomNotFound");
   }
 }
