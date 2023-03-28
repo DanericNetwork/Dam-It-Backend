@@ -2,7 +2,7 @@ import Websocket from "../socket.builder";
 import { findByPin, findByPlayer, joinRoomByPin } from "./room.service";
 
 /**
- * Handles create room requests from the client
+ * Handles the join room socket.
  * @param {Socket} socket this represents the client socket. (for info as socketID e.g)
  **/
 export default class JoinRoom extends Websocket {

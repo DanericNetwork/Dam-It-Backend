@@ -24,16 +24,23 @@ export function getUserId(client: Socket): string {
  * @example
  * getClientByUserId("1234567890").emit("message", "Hello World");
  **/
-export function getClientByUserId(userId: string): Socket | void {
-  let client: any;
-  socketServer.server?.sockets.sockets.forEach((socket: Socket) => {
-    if (socket?.handshake.auth.userId == userId) {
-      client = socket;
-    }
+export function getClientByUserId(userId: string): Socket | undefined {
+  const sockets = Array.from(
+    socketServer.server?.sockets.sockets.values() as Iterable<Socket>
+  );
+
+  const client = sockets.find((socket: Socket) => {
+    return socket.handshake.auth.userId === userId;
   });
-  if (client instanceof Socket) {
+
+  if (client) {
     return client;
   } else {
     Debug(DebugMethod.error, `User ${userId} not found`);
+    return undefined;
   }
 }
+
+
+
+
