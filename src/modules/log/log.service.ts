@@ -6,7 +6,6 @@ import { emitToRoom } from "../room/room.service";
  * @property {string} join - The player joined the room.
  * @property {string} create - The player created the room.
  * @property {string} end - The game ended.
- * @property {string} hit - The player hit a ship.
  * @property {string} disconnect - The player disconnected.
  * @property {string} reconnect - The player reconnected.
  **/
@@ -14,7 +13,6 @@ export enum LogAction {
   join = "join",
   create = "create",
   end = "end",
-  hit = "hit",
   disconnect = "disconnect",
   reconnect = "reconnect",
 }
