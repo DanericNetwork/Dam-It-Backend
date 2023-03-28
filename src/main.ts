@@ -1,5 +1,5 @@
-import ExpressServer from "./services/express.service";
-import SocketServer from "./services/socket.service";
+import ExpressServer from "./server/express.server";
+import SocketServer from "./server/socket.server";
 
 /** Create the servers **/
 export const expressServer: ExpressServer = new ExpressServer();
