@@ -196,7 +196,7 @@ export function recoverRoomByClient(client: Socket): void {
   const room = findByPlayer(client);
   if (room !== undefined) {
     client.join(room.pin);
-    client.emit("roomJoined", room.pin);
+    client.emit("roomRecovered", room.pin);
     Debug(
       DebugMethod.info,
       `${getUserId(client)} recovered room with pin: ${room.pin}`
@@ -206,6 +206,7 @@ export function recoverRoomByClient(client: Socket): void {
       player: getUserId(client),
     });
   } else {
+    client.emit("noRoomRecovered");
     sendClientError(client, "Recovering room failed: You are not in a room");
   }
 }
