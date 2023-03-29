@@ -1,12 +1,17 @@
 import { Socket } from "socket.io";
 
 export default class WebSocket {
-  private _name: string = "";
+  private _name: string = this.constructor.name.replace(/([A-Z])/g, "-$1").toLowerCase().substr(1);
   private _execution: Function = () => {};
   private _client: Socket = {} as Socket;
+  protected executionHandler: Function | any = () => {}
 
   constructor() {
-    this._name = this.constructor.name.toLowerCase();
+    this.setExecution(this.executionHandler);
+  }
+
+  public setExecutionHandler(handler: Function) {
+    this.executionHandler = handler;
   }
 
   /**
@@ -34,6 +39,7 @@ export default class WebSocket {
 
   /**
    * Get the name of the socket
+   * If not set, it will return the name of the class (e.g. CreateRoom -> create-room)
    **/
   get name(): string {
     return this._name;
