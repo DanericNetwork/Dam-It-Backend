@@ -226,7 +226,7 @@ export function joinRoomByPin(client: Socket, pin: string): void {
       player: getUserId(client),
     });
   } else {
-    client.emit("roomNotFound");
+    sendClientError(client, "Join room failed: Room does not exist");
   }
 }
 
