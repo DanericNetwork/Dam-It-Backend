@@ -159,8 +159,8 @@ export function findByPlayer(player: Socket): Room | undefined {
 export async function deleteRoom(pin: string): Promise<void> {
   const room = findByPin(pin);
   if (room !== undefined && room instanceof Room) {
-    socketServer.server?.sockets.in(pin).socketsLeave(pin);
     socketServer.server?.sockets.in(pin).emit("roomLeft");
+    socketServer.server?.sockets.in(pin).socketsLeave(pin);
     roomStorage = roomStorage.filter((room) => room.pin !== pin);
   }
 }
