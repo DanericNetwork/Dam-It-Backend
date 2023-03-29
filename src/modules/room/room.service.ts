@@ -220,7 +220,7 @@ export function recoverRoomByClient(client: Socket): void {
  **/
 export function joinRoomByPin(client: Socket, pin: string): void {
   const room = findByPin(pin);
-  if (room !== undefined) {
+  if (room !== undefined && findByPlayer(client) === undefined) {
     room.setPlayer2(client);
     room.logService.addLog({
       action: LogAction.join,

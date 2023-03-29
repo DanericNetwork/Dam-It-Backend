@@ -16,7 +16,7 @@ export default function Debug(method: DebugMethod, ...message: any) {
     case DebugMethod.info:
   }
 
-  Config.env !== "test" &&
+  Config?.env !== "test" &&
     console.log(
       `\x1b[37m[${new Date().toLocaleTimeString()}]\x1b[0m ${method} ${message}`
     );
