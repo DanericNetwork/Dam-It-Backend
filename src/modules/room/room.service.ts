@@ -5,6 +5,7 @@ import Debug, { DebugMethod } from "../../utils/debug";
 import { sendClientError } from "../message.client";
 import { getUserId } from "../user.service";
 import { LogAction, LogService } from "../log/log.service";
+import { ChatService } from "../chat/chat.service";
 
 /**
  * Represents a room in the game.
@@ -13,6 +14,7 @@ export class Room {
   private _pin: string;
   private _created_at: Date;
   private _logService: LogService;
+  private _chatService: ChatService;
   private _player1: string;
   private _player2?: string;
 
@@ -26,6 +28,7 @@ export class Room {
     this._pin = this.generatePin();
     this._player1 = player1.handshake.auth.userId;
     this._logService = new LogService(this._pin);
+    this._chatService = new ChatService(this._pin);
     this._created_at = new Date();
     this.initPlayerRoom(player1);
   }
@@ -60,6 +63,10 @@ export class Room {
    **/
   get logService(): LogService {
     return this._logService;
+  }
+
+  get chatService(): ChatService {
+    return this._chatService;
   }
 
   /**
