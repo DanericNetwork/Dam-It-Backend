@@ -10,8 +10,8 @@ export default class MongoServer {
         this.url = Config.mongoUrl;
     }
 
-    public start() {
-        mongoose.connect(this.url).then(() => {
+    async start() {
+        await mongoose.connect(this.url).then(() => {
             Debug(DebugMethod.info, 'Connected to MongoDB in ' + (new Date().getTime() - this.at.getTime()) + 'ms');
         }).catch((err) => {
             Debug(DebugMethod.error, `Error connecting to MongoDB: ${err}`);

@@ -41,7 +41,7 @@ interface LogData {
  **/
 interface LogEntry {
   action: LogAction;
-  player: string;
+  player: number;
   data?: object;
   from?: { x: number; y: number };
   to?: { x: number; y: number };
@@ -51,17 +51,17 @@ interface LogEntry {
  * This class creates a new set of data for log.
  * @class
  * @property {LogAction} action - The action that was performed.
- * @property {string} player - The player that performed the action.
+ * @property {number} player - The player that performed the action.
  * @property {object} data - The data for the action.
  * @property {Date} timestamp - The timestamp of the log entry.
  **/
 class Log {
   private action: LogAction;
-  private player: string;
+  private player: number;
   private data?: LogData;
   private timestamp: Date;
 
-  constructor(action: LogAction, player: string, data?: LogData) {
+  constructor(action: LogAction, player: number, data?: LogData) {
     this.action = action;
     this.player = player;
     this.data = data;

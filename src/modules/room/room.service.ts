@@ -2,8 +2,7 @@ import { randomInt } from "crypto";
 import { socketServer } from "../../main";
 import { Socket } from "socket.io";
 import Debug, { DebugMethod } from "../../utils/debug";
-import { sendClientError } from "../message.client";
-import { getUserId } from "../user.service";
+import { Session, getSessionByClient } from "../auth/session.service";
 import { LogAction, LogService } from "../log/log.service";
 
 /**
@@ -13,8 +12,8 @@ export class Room {
   private _pin: string;
   private _created_at: Date;
   private _logService: LogService;
-  private _player1: string;
-  private _player2?: string;
+  private _player1: Session;
+  private _player2?: Session;
 
   /**
    * @param {Socket} player1 - the first player who joins the room
@@ -24,7 +23,7 @@ export class Room {
    */
   constructor(player1: Socket) {
     this._pin = this.generatePin();
-    this._player1 = player1.handshake.auth.userId;
+    this._player1 = getSessionByClient(player1) as Session;
     this._logService = new LogService(this._pin);
     this._created_at = new Date();
     this.initPlayerRoom(player1);
@@ -88,10 +87,10 @@ export class Room {
   public setPlayer2(player2: Socket): void {
     if (
       this._player2 === undefined &&
-      this._player1 !== getUserId(player2) &&
+      this._player1 !== getSessionByClient(player2) &&
       !findByPlayer(player2)
     ) {
-      this._player2 = getUserId(player2);
+      this._player2 = getSessionByClient(player2);
       player2.join(this._pin);
       player2.emit("roomJoined", this._pin);
     }
@@ -107,10 +106,6 @@ export class Room {
       Debug(
         DebugMethod.error,
         `${this.players.player1} tried to create a room while already in a room`
-      );
-      sendClientError(
-        authorPlayer,
-        "Create room failed: You are already in a room"
       );
     } else {
       authorPlayer.join(this.pin);
@@ -145,8 +140,8 @@ export function findByPin(pin: string): Room | undefined {
 export function findByPlayer(player: Socket): Room | undefined {
   return roomStorage.find(
     (room) =>
-      room.players.player1 === getUserId(player) ||
-      room.players.player2 === getUserId(player)
+      room.players.player1 === getSessionByClient(player) ||
+      room.players.player2 === getSessionByClient(player)
   );
 }
 
@@ -171,7 +166,7 @@ export async function deleteRoom(pin: string): Promise<void> {
  * @returns {string} The user id.
  **/
 export function leaveRoomByUserId(client: Socket): void {
-  const userId = getUserId(client);
+  const userId = getSessionByClient(client);
   const room = client ? findByPlayer(client) : undefined;
   if (room !== undefined) {
     deleteRoom(room.pin);
@@ -182,7 +177,6 @@ export function leaveRoomByUserId(client: Socket): void {
       DebugMethod.error,
       `${userId} tried to leave a room but was not in one`
     );
-    sendClientError(client, "Leave room failed: You are not in a room");
   }
 }
 
@@ -199,15 +193,14 @@ export function recoverRoomByClient(client: Socket): void {
     client.emit("roomRecovered", room.pin);
     Debug(
       DebugMethod.info,
-      `${getUserId(client)} recovered room with pin: ${room.pin}`
+      `${getSessionByClient(client)} recovered room with pin: ${room.pin}`
     );
     findByPin(room.pin)?.logService.addLog({
       action: LogAction.reconnect,
-      player: getUserId(client),
+      player: getSessionByClient(client) === room.players.player1 ? 1 : 2,
     });
   } else {
     client.emit("noRoomRecovered");
-    sendClientError(client, "Recovering room failed: You are not in a room");
   }
 }
 
@@ -224,10 +217,13 @@ export function joinRoomByPin(client: Socket, pin: string): void {
     room.setPlayer2(client);
     room.logService.addLog({
       action: LogAction.join,
-      player: getUserId(client),
+      player: 1,
     });
   } else {
-    sendClientError(client, "Join room failed: Room does not exist");
+    Debug(
+      DebugMethod.error,
+      `${getSessionByClient(client)} tried to join room with pin: ${pin} but it does not exist`
+    );
   }
 }
 

@@ -1,4 +1,4 @@
-import Websocket from "../socket.builder";
+import Websocket from "../socket.dto";
 import { Room } from "./room.service";
 
 /**

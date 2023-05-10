@@ -3,8 +3,9 @@ import path from "path";
 import { Server as IoServer, Socket } from "socket.io";
 import Debug, { DebugMethod } from "../utils/debug";
 import { Config } from "../utils/config";
-import Websocket from "../modules/socket.builder";
+import Websocket from "../modules/socket.dto";
 import { expressServer } from "../main";
+import { getSessionByClient, updateClientBySessionId } from "../modules/auth/session.service";
 
 /**
  * Manages the socket.io server & clients.
@@ -54,9 +55,14 @@ export default class SocketServer {
   private handleConnection(client: Socket): void {
     Debug(
       DebugMethod.info,
-      `User connected ${client.handshake.auth.userId}: ${client.handshake.headers.origin}`
+      `User connected ${client.id}: ${client.handshake.headers.origin}`
     );
-    Debug(DebugMethod.info, `Loading modules for ${client.handshake.auth.userId}...`);
+    Debug(
+      DebugMethod.info,
+      `Loading modules for ${client.id}...`
+    );
+    updateClientBySessionId(client.handshake.auth.token, client);
+    getSessionByClient(client)?.activate;
     this.loadModules(client);
   }
 
@@ -91,11 +97,20 @@ export default class SocketServer {
     if (module?.prototype instanceof Websocket) {
       const websocket = new module() as Websocket;
       websocket.setClient(client);
-      Debug(
+      let allow = true;
+      websocket.middlewares.forEach((middleware) => {
+        if (!middleware()) {
+          Debug(
+            DebugMethod.warn,
+            `middleware ${middleware.name} returned false`
+          );
+          allow = false;
+        }
+      });
+      allow ? client.on(websocket.name, websocket.execution) && Debug(
         DebugMethod.info,
         `(${websocket.name}) websocket-module initialized`
-      );
-      client.on(websocket.name, websocket.execution);
+      ) : Debug( DebugMethod.error, `* ${file} * websocket-module not initialized (middleware)` );
     } else {
       Debug(
         DebugMethod.error,
