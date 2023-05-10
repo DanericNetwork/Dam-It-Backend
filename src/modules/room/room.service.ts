@@ -117,10 +117,6 @@ export class Room {
     } else {
       authorPlayer.join(this.pin);
       roomStorage.push(this);
-      findByPin(this.pin)?.logService.addLog({
-        action: LogAction.create,
-        player: this.players.player1,
-      });
       authorPlayer.emit("roomJoined", this.pin);
       Debug(
         DebugMethod.info,

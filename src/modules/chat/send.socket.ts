@@ -1,7 +1,8 @@
 import { debug } from "console";
 import { findByPlayer } from "../room/room.service";
-import WebSocket from "../socket.builder";
+import WebSocket from "../socket.dto";
 import Debug, { DebugMethod } from "../../utils/debug";
+import { getSessionByClient } from "../auth/session.service";
 
 
 /**
@@ -12,7 +13,8 @@ export default class SendChat extends WebSocket {
   constructor() {
     super();
     this.setExecution((message:string) => {
-        findByPlayer(this.client)?.chatService.addMessage(this.client.id, message);
+        findByPlayer(this.client)?.chatService.addMessage(getSessionByClient(this.client)?.User.username, message);
+        console.log(message);
     });
   }
 }

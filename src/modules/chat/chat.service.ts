@@ -3,12 +3,12 @@ import { emitToRoom } from "../room/room.service";
 
 
 class ChatMessage {
-    private userId: string;
+    private username: string;
     private message: string;
     private timestamp: Date;
 
-    constructor(userId: string, message: string) {
-        this.userId = userId;
+    constructor(username: string, message: string) {
+        this.username = username;
         this.message = message;
         this.timestamp = new Date();
     }
@@ -22,8 +22,8 @@ export class ChatService {
         this._pin = pin;
     }
 
-    public addMessage(userId: string, message: string) {
-        this._messages.push(new ChatMessage(userId, message));
+    public addMessage(username: string, message: string) {
+        this._messages.push(new ChatMessage(username, message));
         this.refetchMessages();
     }
 
