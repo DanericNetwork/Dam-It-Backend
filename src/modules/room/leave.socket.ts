@@ -1,4 +1,4 @@
-import WebSocket from "../socket.builder";
+import WebSocket from "../socket.dto";
 import { leaveRoomByUserId } from "./room.service";
 
 /**

@@ -1,5 +1,5 @@
-import Websocket from "../socket.builder";
-import { findByPin, findByPlayer, joinRoomByPin } from "./room.service";
+import Websocket from "../socket.dto";
+import { joinRoomByPin } from "./room.service";
 
 /**
  * Handles the join room socket.
