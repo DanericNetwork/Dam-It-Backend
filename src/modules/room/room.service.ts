@@ -4,6 +4,7 @@ import { Socket } from "socket.io";
 import Debug, { DebugMethod } from "../../utils/debug";
 import { Session, getSessionByClient } from "../auth/session.service";
 import { LogAction, LogService } from "../log/log.service";
+import { ChatService } from "../chat/chat.service";
 
 /**
  * Represents a room in the game.
@@ -12,6 +13,7 @@ export class Room {
   private _pin: string;
   private _created_at: Date;
   private _logService: LogService;
+  private _chatService: ChatService;
   private _player1: Session;
   private _player2?: Session;
 
@@ -25,6 +27,7 @@ export class Room {
     this._pin = this.generatePin();
     this._player1 = getSessionByClient(player1) as Session;
     this._logService = new LogService(this._pin);
+    this._chatService = new ChatService(this._pin);
     this._created_at = new Date();
     this.initPlayerRoom(player1);
   }
@@ -59,6 +62,10 @@ export class Room {
    **/
   get logService(): LogService {
     return this._logService;
+  }
+
+  get chatService(): ChatService {
+    return this._chatService;
   }
 
   /**
