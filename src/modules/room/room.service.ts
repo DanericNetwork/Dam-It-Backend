@@ -200,7 +200,7 @@ export function recoverRoomByClient(client: Socket): void {
     );
     findByPin(room.pin)?.logService.addLog({
       action: LogAction.reconnect,
-      player: getSessionByClient(client) === room.players.player1 ? 1 : 2,
+      session: getSessionByClient(client),
     });
   } else {
     client.emit("noRoomRecovered");
@@ -220,7 +220,7 @@ export function joinRoomByPin(client: Socket, pin: string): void {
     room.setPlayer2(client);
     room.logService.addLog({
       action: LogAction.join,
-      player: 1,
+      session: getSessionByClient(client),
     });
   } else {
     Debug(

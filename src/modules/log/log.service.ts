@@ -1,3 +1,4 @@
+import { Session } from "../auth/session.service";
 import { emitToRoom } from "../room/room.service";
 
 /**
@@ -41,7 +42,7 @@ interface LogData {
  **/
 interface LogEntry {
   action: LogAction;
-  player: number;
+  session: Session | undefined;
   data?: object;
   from?: { x: number; y: number };
   to?: { x: number; y: number };
@@ -57,13 +58,13 @@ interface LogEntry {
  **/
 class Log {
   private action: LogAction;
-  private player: number;
+  private username: string;
   private data?: LogData;
   private timestamp: Date;
 
-  constructor(action: LogAction, player: number, data?: LogData) {
+  constructor(action: LogAction, session: Session | undefined, data?: LogData) {
     this.action = action;
-    this.player = player;
+    this.username = session?.User.username;
     this.data = data;
     this.timestamp = new Date();
   }
@@ -95,7 +96,7 @@ class Log {
  * @method addLog - Adds a log to the logs array and emits the logs to the room.
  **/
 export class LogService {
-  private _logs: Log[] = [];
+  private _logs: any[] = [];
   private _roomPin: string;
 
   constructor(roomPin: string) {
@@ -123,7 +124,7 @@ export class LogService {
    * @description It creates a new log object and pushes it to the logs array.
    **/
   private storeLog(entry: LogEntry): void {
-    this._logs.push(new Log(entry.action, entry.player, entry.data));
+    this._logs.push(new Log(entry.action, entry.session, entry.data));
   }
 
   /**
